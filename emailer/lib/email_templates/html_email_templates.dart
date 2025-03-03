@@ -1,5 +1,5 @@
 class HtmlEmailTemplates {
-  static const String howMuchSpentOnSmoking = ''' <!DOCTYPE html>
+static const  String howMuchSpentOnSmoking = ''' <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -136,6 +136,6 @@ class HtmlEmailTemplates {
 </body>
 </html> ''';
 
-  static const String testEmail =
-      'Hey, how are you doing? I think I saw you the other day. Were you at the park?';
+
+  
 }

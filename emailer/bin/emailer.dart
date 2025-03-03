@@ -37,12 +37,21 @@ Future<void> main(List<String> arguments) async {
     final currentEmail = emails[0];
     print('Sending email to: ${currentEmail.emailAddress}...');
 
+    String htmlContent;
+    final random = Random();
+
+    if (random.nextBool()) {
+      htmlContent = HtmlEmailTemplates.emailsToClinics1;
+    } else {
+      htmlContent = HtmlEmailTemplates.emailsToClinics2;
+    }
+
     try {
       // Send email
       final sendReport = await emailer.sendEmail(
         recipients: [currentEmail.emailAddress],
         subject: 'Do you know the cost of smoking for your workplace?',
-        htmlContent: HtmlEmailTemplates.testEmail,
+        htmlContent: htmlContent,
       );
 
       print('Email sent successfully.');
@@ -54,7 +63,7 @@ Future<void> main(List<String> arguments) async {
       print('Email marked as sent in database.');
 
       // Add delay before fetching the next email
-      final random = Random();
+
       final int min = Config.waitTimeLowerBound;
       final int max = Config.waitTimeUpperBound;
       final randomNumber = min + random.nextInt(max - min + 1);

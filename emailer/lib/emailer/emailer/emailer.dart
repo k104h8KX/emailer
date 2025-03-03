@@ -51,7 +51,9 @@ class Emailer {
   /// - [attachments]: Optional list of file attachments
   /// - [ccRecipients]: Optional list of CC recipients
   /// - [bccRecipients]: Optional list of BCC recipients
-  Future<void> sendEmail({
+  ///
+  /// Returns the send report containing delivery information
+  Future<SendReport> sendEmail({
     required List<String> recipients,
     required String subject,
     required String htmlContent,
@@ -79,6 +81,7 @@ class Emailer {
     try {
       final sendReport = await send(message, _smtpServer);
       print('Email sent successfully: ${sendReport.toString()}');
+      return sendReport;
     } catch (e) {
       print('Error sending email: $e');
       rethrow;

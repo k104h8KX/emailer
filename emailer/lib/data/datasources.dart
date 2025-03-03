@@ -37,12 +37,13 @@ class NocoDbApi {
 
   Future<void> markEmailAsSent(Email email) async {
     final Uri uri = Uri.parse('$baseUrl/tables/mm1rbik1annq3gc/records');
-    
+
     final Map<String, dynamic> requestBody = {
       'Id': email.id,
       'is_sent': true,
+      'response_from_server': email.responseFromServer,
     };
-    
+
     final response = await client.patch(
       uri,
       headers: {
@@ -52,9 +53,10 @@ class NocoDbApi {
       },
       body: json.encode(requestBody),
     );
-    
+
     if (response.statusCode != 200) {
-      throw Exception('Failed to mark email as sent: ${response.statusCode} ${response.body}');
+      throw Exception(
+          'Failed to mark email as sent: ${response.statusCode} ${response.body}');
     }
   }
 }

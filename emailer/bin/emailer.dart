@@ -39,16 +39,18 @@ Future<void> main(List<String> arguments) async {
 
     try {
       // Send email
-      await emailer.sendEmail(
+      final sendReport = await emailer.sendEmail(
         recipients: [currentEmail.emailAddress],
         subject: 'Do you know the cost of smoking for your workplace?',
         htmlContent: HtmlEmailTemplates.testEmail,
       );
 
       print('Email sent successfully.');
+      print('Send report: ${sendReport.toString()}');
 
       // Mark as sent in database
-      await emailRepository.markEmailAsSent(currentEmail);
+      await emailRepository.markEmailAsSent(
+          currentEmail, sendReport.toString());
       print('Email marked as sent in database.');
 
       // Add delay before fetching the next email

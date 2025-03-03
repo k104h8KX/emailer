@@ -15,9 +15,10 @@ class EmailRepositoryImpl implements DataRepository {
   }
 
   @override
-  Future<void> markEmailAsSent(Email email) async {
+  Future<void> markEmailAsSent(Email email, String sendReport) async {
     // Update the email locally
     email.isSent = true;
+    email.responseFromServer = sendReport;
 
     // Update the email in the database
     await api.markEmailAsSent(email);

@@ -15,9 +15,9 @@ class Email {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'emailAddress': emailAddress,
-      'isSent': isSent,
-      'responseFromServer': responseFromServer,
+      'email': emailAddress,
+      'is_sent': isSent,
+      'response_from_server': responseFromServer,
     };
   }
 

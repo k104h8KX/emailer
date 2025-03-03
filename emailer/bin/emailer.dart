@@ -6,9 +6,13 @@ import 'package:emailer/config/email_config.dart';
 import 'package:emailer/data/models.dart';
 import 'package:emailer/data/repositories/email_repository_impl.dart';
 import 'package:emailer/email_templates/html_email_templates.dart';
-import 'package:emailer/emailer.dart';
+import 'package:emailer/emailer/emailer/emailer.dart';
+import 'package:emailer/helpers/environment_helper.dart';
 
 Future<void> main(List<String> arguments) async {
+  // Initialize environment
+  Env.initialize();
+
   Emailer emailer = Emailer(
     smtpHost: EmailConfig.smtpServerName,
     smtpPort: EmailConfig.smtpPort,
@@ -19,49 +23,49 @@ Future<void> main(List<String> arguments) async {
   );
 
   final emailRepository = EmailRepositoryImpl();
-  List<Email> emails = await emailRepository.getNextEmailToBeSent();
 
-  print('this is the email list');
-  print(emails.toString());
+  // Process emails one by one
+  do {
+    // Get the next email
+    List<Email> emails = await emailRepository.getNextEmailToBeSent();
 
-  if (emails.isEmpty) {
-    print('No emails to send');
-    exit(0);
-  }
+    if (emails.isEmpty) {
+      print('No more emails to send');
+      break;
+    }
 
-  await Future.delayed(Duration(seconds: 24));
+    final currentEmail = emails[0];
+    print('Sending email to: ${currentEmail.emailAddress}...');
 
-  await emailRepository.markEmailAsSent(emails[0]);
+    try {
+      // Send email
+      await emailer.sendEmail(
+        recipients: [currentEmail.emailAddress],
+        subject: 'Do you know the cost of smoking for your workplace?',
+        htmlContent: HtmlEmailTemplates.testEmail,
+      );
 
-  print('email marked as sent');
+      print('Email sent successfully.');
 
+      // Mark as sent in database
+      await emailRepository.markEmailAsSent(currentEmail);
+      print('Email marked as sent in database.');
+
+      // Add delay before fetching the next email
+      final random = Random();
+      final int min = Config.waitTimeLowerBound;
+      final int max = Config.waitTimeUpperBound;
+      final randomNumber = min + random.nextInt(max - min + 1);
+
+      print('Waiting for $randomNumber minutes before sending next email...');
+      await Future.delayed(Duration(minutes: randomNumber));
+    } catch (e) {
+      print('Error processing email: $e');
+      // Wait a bit before trying the next email
+      await Future.delayed(Duration(seconds: 30));
+    }
+  } while (true); // Continue indefinitely until no more emails
+
+  print('All emails processed successfully.');
   exit(0);
-
-//   print('Sending email...');
-
-//   await emailer.sendEmail(
-//     recipients: ['tom.avila@outlook.com'],
-//     subject: 'Do you know the cost of smoking for your workplace?',
-//     htmlContent: HtmlEmailTemplates.testEmail,
-//   );
-
-//   print('Sending email...');
-
-//   //generate a random number between 1 and 100
-//   final random = Random();
-//   final int min = Config.waitTimeLowerBound; // Lower bound (inclusive)
-//   final int max = Config.waitTimeUpperBound; // Upper bound (inclusive)
-//   final randomNumber = min + random.nextInt(max - min + 1);
-
-//   print('Email sent...');
-//   print('Waiting for $randomNumber minutes...');
-
-//   //wait for a random amount of time
-//   await Future.delayed(Duration(minutes: randomNumber));
-
-//   await emailer.sendEmail(
-//     recipients: ['tom.avila@outlook.com'],
-//     subject: 'Do you know the cost of smoking for your workplace?',
-//     htmlContent: HtmlEmailTemplates.howMuchSpentOnSmoking,
-//   );
 }

@@ -3,10 +3,12 @@ import 'dart:math';
 
 import 'package:emailer/config/config.dart';
 import 'package:emailer/config/email_config.dart';
-import 'package:emailer/data/models.dart';
+import 'package:emailer/data/models/send_from_email.dart';
+import 'package:emailer/data/models/send_to_email.dart';
 import 'package:emailer/data/repositories/email_repository_impl.dart';
 import 'package:emailer/email_templates/html_email_templates.dart';
 import 'package:emailer/emailer/emailer/emailer.dart';
+import 'package:emailer/helpers/email_getter.dart';
 import 'package:emailer/helpers/environment_helper.dart';
 
 Future<void> main(List<String> arguments) async {
@@ -16,10 +18,6 @@ Future<void> main(List<String> arguments) async {
   Emailer emailer = Emailer(
     smtpHost: EmailConfig.smtpServerName,
     smtpPort: EmailConfig.smtpPort,
-    username: EmailConfig.username,
-    password: EmailConfig.password,
-    senderEmail: EmailConfig.username,
-    senderName: EmailConfig.senderName,
   );
 
   final emailRepository = EmailRepositoryImpl();
@@ -69,6 +67,7 @@ Future<void> main(List<String> arguments) async {
       final randomNumber = min + random.nextInt(max - min + 1);
 
       print('Waiting for $randomNumber minutes before sending next email...');
+
       await Future.delayed(Duration(minutes: randomNumber));
     } catch (e) {
       print('Error processing email: $e');

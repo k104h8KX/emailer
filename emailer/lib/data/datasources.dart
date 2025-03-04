@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:emailer/config/nocoddb.dart';
-import 'package:emailer/data/models.dart';
+import 'package:emailer/data/models/send_to_email.dart';
 
 class NocoDbApi {
   final String baseUrl = 'https://app.nocodb.com/api/v2';

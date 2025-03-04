@@ -1,6 +1,6 @@
 import 'package:emailer/data/datasources.dart';
 import 'package:emailer/data/repositories/repositories.dart';
-import 'package:emailer/data/models.dart';
+import 'package:emailer/data/models/send_to_email.dart';
 
 class EmailRepositoryImpl implements DataRepository {
   final NocoDbApi api;
